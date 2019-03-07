@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bitly/go-simplejson"
 )
 
 type Info struct {
@@ -17,14 +16,15 @@ func main() {
 }
 
 func addBanana(src string) string{
-	res, err := simplejson.NewJson([]byte(src))
+	var a = Info{}
+	err := json.Unmarshal([]byte(src), &a)
 	if err != nil {
 		return "err"
 	}
-	var a Info
-	a.Page = res.Get("page").MustInt()
-	newFruits :=append(res.Get("fruits").MustStringArray(), "banana")
-	a.Fruits = newFruits
-	jsonBytes, _ := json.Marshal(a)
+	a.Fruits = append(a.Fruits, "banana")
+	jsonBytes, err := json.Marshal(a)
+	if err != nil {
+		return "err"
+	}
 	return string(jsonBytes)
 }
